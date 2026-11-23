@@ -10,6 +10,7 @@ interface OverviewTabProps {
 
 export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
   const { data_summary, distribution_stats, var_comparison, backtesting_99, price_series, portfolio_risk } = data;
+  const currencySymbol = data_summary.currency_symbol || (data_summary.tickers.every(t => t.endsWith('.NS') || t.endsWith('.BO')) ? '₹' : '$');
 
   // Primary 99% 1-day Historical VaR baseline
   const histModel = var_comparison.models.find(m => m.method.includes('Historical')) || var_comparison.models[0];
@@ -96,7 +97,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <MetricCard
           label={`VaR (${(var_comparison.confidence_level * 100).toFixed(0)}%, ${var_comparison.holding_period_days}d)`}
-          value={`$${histModel.var_amount.toLocaleString()}`}
+          value={`${currencySymbol}${histModel.var_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           subValue={`-${histModel.var_pct.toFixed(2)}%`}
           badge="HISTORICAL"
           badgeType="amber"
@@ -106,7 +107,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
 
         <MetricCard
           label="Expected Shortfall (ES)"
-          value={`$${histModel.es_amount.toLocaleString()}`}
+          value={`${currencySymbol}${histModel.es_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           subValue={`-${histModel.es_pct.toFixed(2)}%`}
           badge="TAIL CVaR"
           badgeType="red"
@@ -116,12 +117,12 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
 
         <MetricCard
           label="Monte Carlo VaR"
-          value={`$${mcModel.var_amount.toLocaleString()}`}
+          value={`${currencySymbol}${mcModel.var_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           subValue={`-${mcModel.var_pct.toFixed(2)}%`}
           badge="10K SIMS"
           badgeType="cyan"
           tooltip="Multivariate Cholesky correlated stochastic simulation."
-          icon={<DollarSign className="w-3.5 h-3.5 text-[#00e5ff]" />}
+          icon={<span className="text-[#00e5ff] font-bold text-xs">{currencySymbol}</span>}
         />
 
         <MetricCard
@@ -205,7 +206,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
                         {(weight * 100).toFixed(1)}%
                       </td>
                       <td className="py-2 text-right text-[#c5d1e0] tabular-nums">
-                        ${posVal.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                        {currencySymbol}{posVal.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                       </td>
                       <td className="py-2 text-right text-[#ff9800] tabular-nums">
                         {vol.toFixed(1)}%
@@ -239,10 +240,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => {
                   </div>
                   <div className="text-right">
                     <div className="text-xs font-mono font-bold text-[#ff9800] tabular-nums">
-                      ${m.var_amount.toLocaleString()} <span className="text-[#8b9bb4] text-[10px]">(-{m.var_pct.toFixed(2)}%)</span>
+                      {currencySymbol}{m.var_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-[#8b9bb4] text-[10px]">(-{m.var_pct.toFixed(2)}%)</span>
                     </div>
                     <div className="text-[10px] font-mono text-rose-400 tabular-nums">
-                      ES: ${m.es_amount.toLocaleString()} (-{m.es_pct.toFixed(2)}%)
+                      ES: {currencySymbol}{m.es_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (-{m.es_pct.toFixed(2)}%)
                     </div>
                   </div>
                 </div>

@@ -4,6 +4,7 @@ import { PortfolioRequest } from '../types';
 
 interface ControlsProps {
   params: PortfolioRequest;
+  currencySymbol?: string;
   onChange: (updated: PortfolioRequest) => void;
   onRun: () => void;
   onExportSummary: () => void;
@@ -14,6 +15,7 @@ interface ControlsProps {
 
 export const Controls: React.FC<ControlsProps> = ({
   params,
+  currencySymbol = '$',
   onChange,
   onRun,
   onExportSummary,
@@ -111,8 +113,8 @@ export const Controls: React.FC<ControlsProps> = ({
         {/* Portfolio Value */}
         <div>
           <label className="text-[11px] font-mono uppercase tracking-wide text-[#8b9bb4] block mb-1 flex items-center gap-1">
-            <DollarSign className="w-3.5 h-3.5 text-[#ff9800]" />
-            Portfolio Value ($)
+            <span className="text-[#ff9800] font-bold text-xs">{currencySymbol}</span>
+            Portfolio Value ({currencySymbol})
           </label>
           <input
             type="number"

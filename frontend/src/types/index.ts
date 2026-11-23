@@ -17,6 +17,8 @@ export interface DataSummary {
   fetch_timestamp: string;
   latest_prices: Record<string, number>;
   currencies: Record<string, string>;
+  portfolio_currency: string;
+  currency_symbol: string;
   disclaimer: string;
 }
 

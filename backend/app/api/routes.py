@@ -72,6 +72,8 @@ def get_full_dashboard(request: PortfolioRequest):
         fetch_timestamp=meta["fetch_timestamp"],
         latest_prices=meta["latest_prices"],
         currencies=meta["currencies"],
+        portfolio_currency=meta.get("portfolio_currency", "USD"),
+        currency_symbol=meta.get("currency_symbol", "$"),
         disclaimer=meta["disclaimer"]
     )
 

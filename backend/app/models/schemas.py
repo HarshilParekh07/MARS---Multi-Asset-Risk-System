@@ -44,6 +44,8 @@ class DataSummary(BaseModel):
     fetch_timestamp: str
     latest_prices: Dict[str, float]
     currencies: Dict[str, str]
+    portfolio_currency: str = "USD"
+    currency_symbol: str = "$"
     disclaimer: str
 
 class DistributionStats(BaseModel):

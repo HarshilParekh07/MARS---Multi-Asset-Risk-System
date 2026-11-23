@@ -10,6 +10,7 @@ interface StressTestingTabProps {
 
 export const StressTestingTab: React.FC<StressTestingTabProps> = ({ data, portfolioReq }) => {
   const { stress_testing, var_comparison } = data;
+  const currencySymbol = data.data_summary?.currency_symbol || (data.data_summary?.tickers?.every(t => t.endsWith('.NS') || t.endsWith('.BO')) ? '₹' : '$');
   const [sliderShock, setSliderShock] = useState<number>(-15);
   const [customStress, setCustomStress] = useState<StressTestResponse | null>(null);
   const [simulating, setSimulating] = useState(false);
@@ -40,7 +41,7 @@ export const StressTestingTab: React.FC<StressTestingTabProps> = ({ data, portfo
             </h2>
           </div>
           <span className="text-[11px] font-mono text-[#8b9bb4]">
-            Portfolio Baseline: <span className="text-white font-bold">${var_comparison.portfolio_value.toLocaleString()}</span>
+            Portfolio Baseline: <span className="text-white font-bold">{currencySymbol}{var_comparison.portfolio_value.toLocaleString()}</span>
           </span>
         </div>
 
@@ -92,21 +93,21 @@ export const StressTestingTab: React.FC<StressTestingTabProps> = ({ data, portfo
               </div>
             </div>
             <div className="bg-[#141d27] p-2.5 rounded border border-[#1f2d3d]">
-              <div className="text-[10px] font-mono text-[#8b9bb4] uppercase">Dollar Loss Impact</div>
+              <div className="text-[10px] font-mono text-[#8b9bb4] uppercase">Loss Impact ({currencySymbol})</div>
               <div className="text-base font-mono font-bold text-white tabular-nums mt-0.5">
-                ${activeCustom.portfolio_loss_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                {currencySymbol}{activeCustom.portfolio_loss_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
               </div>
             </div>
             <div className="bg-[#141d27] p-2.5 rounded border border-[#1f2d3d]">
               <div className="text-[10px] font-mono text-[#8b9bb4] uppercase">Post-Shock Portfolio Value</div>
               <div className="text-base font-mono font-bold text-[#00e5ff] tabular-nums mt-0.5">
-                ${activeCustom.stressed_portfolio_value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                {currencySymbol}{activeCustom.stressed_portfolio_value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
               </div>
             </div>
             <div className="bg-[#141d27] p-2.5 rounded border border-[#1f2d3d]">
               <div className="text-[10px] font-mono text-[#8b9bb4] uppercase">Stressed 99% VaR</div>
               <div className="text-base font-mono font-bold text-[#ff9800] tabular-nums mt-0.5">
-                ${activeCustom.stressed_var_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                {currencySymbol}{activeCustom.stressed_var_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
               </div>
             </div>
           </div>
@@ -145,19 +146,19 @@ export const StressTestingTab: React.FC<StressTestingTabProps> = ({ data, portfo
                 <div className="flex justify-between">
                   <span className="text-[#8b9bb4]">Portfolio Loss:</span>
                   <span className="text-rose-400 font-bold tabular-nums">
-                    {sc.portfolio_loss_pct.toFixed(2)}% (${sc.portfolio_loss_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })})
+                    {sc.portfolio_loss_pct.toFixed(2)}% ({currencySymbol}{sc.portfolio_loss_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })})
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#8b9bb4]">Stressed Portfolio Value:</span>
                   <span className="text-white font-bold tabular-nums">
-                    ${sc.stressed_portfolio_value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    {currencySymbol}{sc.stressed_portfolio_value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#8b9bb4]">Stressed 1d VaR:</span>
                   <span className="text-[#ff9800] font-semibold tabular-nums">
-                    ${sc.stressed_var_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} ({sc.stressed_var_pct.toFixed(1)}%)
+                    {currencySymbol}{sc.stressed_var_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} ({sc.stressed_var_pct.toFixed(1)}%)
                   </span>
                 </div>
               </div>

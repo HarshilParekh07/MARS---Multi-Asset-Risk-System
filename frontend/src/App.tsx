@@ -95,6 +95,9 @@ export const App: React.FC = () => {
     { id: 'data' as TabType, label: 'DATA & EXPORT', icon: <Database className="w-3.5 h-3.5" /> }
   ];
 
+  const currencySymbol = dashboardData?.data_summary?.currency_symbol || (params.tickers.some(t => t.endsWith('.NS') || t.endsWith('.BO')) ? '₹' : '$');
+  const portfolioCurrency = dashboardData?.data_summary?.portfolio_currency || (currencySymbol === '₹' ? 'INR' : 'USD');
+
   return (
     <div className="min-h-screen bg-[#080c10] text-[#e0e6ed] flex flex-col font-sans">
       {/* Institutional Bloomberg Header */}
@@ -109,6 +112,7 @@ export const App: React.FC = () => {
         {/* Controls Panel */}
         <Controls
           params={params}
+          currencySymbol={currencySymbol}
           onChange={(updated) => setParams(updated)}
           onRun={() => fetchDashboard(params)}
           onExportSummary={() => apiClient.downloadSummaryCSV(params)}
@@ -198,7 +202,7 @@ export const App: React.FC = () => {
           BLOOMBERG MARS // RISK ANALYTICS SUITE • PYTHON FASTAPI + REACT PLOTLY • 10K MONTE CARLO SIMULATIONS
         </div>
         <div className="flex items-center gap-3">
-          <span>PORTFOLIO VALUATION: USD NORMALIZED</span>
+          <span>PORTFOLIO VALUATION: {portfolioCurrency} ({currencySymbol}) NORMALIZED</span>
           <span className="text-[#475569]">|</span>
           <span className="text-emerald-400">STATISTICAL INTEGRITY VERIFIED</span>
         </div>

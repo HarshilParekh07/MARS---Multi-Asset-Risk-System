@@ -11,7 +11,8 @@ interface BacktestingTabProps {
 export const BacktestingTab: React.FC<BacktestingTabProps> = ({ data, onExportBreaches }) => {
   const [selectedConf, setSelectedConf] = useState<'99' | '95'>('99');
   const bt = selectedConf === '99' ? data.backtesting_99 : data.backtesting_95;
-  const { rolling_risk } = data;
+  const { rolling_risk, data_summary } = data;
+  const currencySymbol = data_summary?.currency_symbol || (data_summary?.tickers.every(t => t.endsWith('.NS') || t.endsWith('.BO')) ? '₹' : '$');
 
   // Build chart traces: Daily return series, rolling VaR threshold, and breach scatter markers
   const dates = rolling_risk.dates;
@@ -260,8 +261,8 @@ export const BacktestingTab: React.FC<BacktestingTabProps> = ({ data, onExportBr
                   <th className="pb-2">Date</th>
                   <th className="pb-2 text-right">Actual Daily Return</th>
                   <th className="pb-2 text-right">VaR Threshold Limit</th>
-                  <th className="pb-2 text-right">Portfolio Loss ($)</th>
-                  <th className="pb-2 text-right">Excess Breach Loss ($)</th>
+                  <th className="pb-2 text-right">Portfolio Loss ({currencySymbol})</th>
+                  <th className="pb-2 text-right">Excess Breach Loss ({currencySymbol})</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1f2d3d]/50">
@@ -278,10 +279,10 @@ export const BacktestingTab: React.FC<BacktestingTabProps> = ({ data, onExportBr
                       -{v.var_threshold_pct.toFixed(2)}%
                     </td>
                     <td className="py-2 text-right text-white font-bold tabular-nums">
-                      ${v.loss_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      {currencySymbol}{v.loss_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </td>
                     <td className="py-2 text-right text-rose-300 font-bold tabular-nums">
-                      +${v.breach_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      +{currencySymbol}{v.breach_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </td>
                   </tr>
                 ))}

@@ -8,8 +8,9 @@ interface PortfolioRiskTabProps {
 }
 
 export const PortfolioRiskTab: React.FC<PortfolioRiskTabProps> = ({ data }) => {
-  const { portfolio_risk, var_comparison } = data;
+  const { portfolio_risk, var_comparison, data_summary } = data;
   const { tickers, weights, asset_volatilities_annualized, marginal_var_pct, component_var_amount, percentage_risk_contributions, correlation_matrix, portfolio_volatility_annualized, diversification_benefit_pct } = portfolio_risk;
+  const currencySymbol = data_summary?.currency_symbol || (data_summary?.tickers.every(t => t.endsWith('.NS') || t.endsWith('.BO')) ? '₹' : '$');
 
   // Bar chart: % Weight vs % Risk Contribution
   const riskContribTraces = [
@@ -101,7 +102,7 @@ export const PortfolioRiskTab: React.FC<PortfolioRiskTabProps> = ({ data }) => {
         <div className="bg-[#0d131a] border border-[#1f2d3d] p-3.5 rounded shadow">
           <div className="text-[11px] font-mono text-[#8b9bb4] uppercase">Total Portfolio Capital</div>
           <div className="text-xl font-mono font-bold text-[#ff9800] tabular-nums mt-1">
-            ${var_comparison.portfolio_value.toLocaleString()}
+            {currencySymbol}{var_comparison.portfolio_value.toLocaleString()}
           </div>
           <div className="text-[10px] font-mono text-[#8b9bb4] mt-0.5">{tickers.length} Active Positions</div>
         </div>
@@ -117,7 +118,7 @@ export const PortfolioRiskTab: React.FC<PortfolioRiskTabProps> = ({ data }) => {
             </h2>
           </div>
           <span className="text-[11px] font-mono text-emerald-400">
-            ∑ Component VaR = Total VaR ($)
+            ∑ Component VaR = Total VaR ({currencySymbol})
           </span>
         </div>
 
@@ -129,7 +130,7 @@ export const PortfolioRiskTab: React.FC<PortfolioRiskTabProps> = ({ data }) => {
                 <th className="pb-2 text-right">Weight (%)</th>
                 <th className="pb-2 text-right">Annual Vol (%)</th>
                 <th className="pb-2 text-right">Marginal VaR (MVaR %)</th>
-                <th className="pb-2 text-right">Component VaR ($)</th>
+                <th className="pb-2 text-right">Component VaR ({currencySymbol})</th>
                 <th className="pb-2 text-right">% Risk Contribution</th>
                 <th className="pb-2 text-right">Risk/Weight Ratio</th>
               </tr>
@@ -149,7 +150,7 @@ export const PortfolioRiskTab: React.FC<PortfolioRiskTabProps> = ({ data }) => {
                     <td className="py-2.5 text-right text-[#c5d1e0] tabular-nums">{vol.toFixed(1)}%</td>
                     <td className="py-2.5 text-right text-[#8b9bb4] tabular-nums">{mvar.toFixed(3)}%</td>
                     <td className="py-2.5 text-right text-[#ff9800] font-bold tabular-nums">
-                      ${cvar.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      {currencySymbol}{cvar.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </td>
                     <td className="py-2.5 text-right font-bold tabular-nums">
                       <span className={rc > w ? 'text-rose-400' : 'text-emerald-400'}>

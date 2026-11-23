@@ -130,6 +130,21 @@ class MarketDataLoader:
         if len(df_prices) < 20:
             raise ValueError(f"Insufficient historical data ({len(df_prices)} bars) for reliable risk calculation.")
 
+        # Determine portfolio primary currency and symbol
+        curr_list = list(currencies.values())
+        if all(c == "INR" for c in curr_list) or any(t.endswith(".NS") or t.endswith(".BO") for t in tickers):
+            portfolio_currency = "INR"
+            currency_symbol = "₹"
+        elif all(c == "EUR" for c in curr_list):
+            portfolio_currency = "EUR"
+            currency_symbol = "€"
+        elif all(c == "GBP" for c in curr_list):
+            portfolio_currency = "GBP"
+            currency_symbol = "£"
+        else:
+            portfolio_currency = "USD"
+            currency_symbol = "$"
+
         meta = {
             "tickers": tickers,
             "start_date": df_prices.index[0].strftime("%Y-%m-%d"),
@@ -138,6 +153,8 @@ class MarketDataLoader:
             "fetch_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC"),
             "latest_prices": latest_prices,
             "currencies": currencies,
+            "portfolio_currency": portfolio_currency,
+            "currency_symbol": currency_symbol,
             "data_source": "Yahoo Finance (via yfinance)",
             "disclaimer": "Market data is sourced from Yahoo Finance for analytical purposes. "
                           "Multi-currency portfolios are evaluated on normalized local adjusted returns."

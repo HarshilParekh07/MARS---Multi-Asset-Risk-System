@@ -8,8 +8,9 @@ interface VarModelsTabProps {
 }
 
 export const VarModelsTab: React.FC<VarModelsTabProps> = ({ data }) => {
-  const { var_comparison, distribution_stats } = data;
+  const { var_comparison, distribution_stats, data_summary } = data;
   const { models, matrix_by_confidence, matrix_by_horizon, portfolio_value } = var_comparison;
+  const currencySymbol = data_summary?.currency_symbol || (data_summary?.tickers.every(t => t.endsWith('.NS') || t.endsWith('.BO')) ? '₹' : '$');
 
   // Bar Chart comparing VaR and ES across the 4 models
   const modelNames = models.map(m => m.method.split(' ')[0] + (m.method.includes('Cornish') ? ' CF' : ''));
@@ -68,9 +69,9 @@ export const VarModelsTab: React.FC<VarModelsTabProps> = ({ data }) => {
                 <th className="pb-2.5">Horizon</th>
                 <th className="pb-2.5">Confidence</th>
                 <th className="pb-2.5 text-right">VaR (%)</th>
-                <th className="pb-2.5 text-right">VaR ($ Value)</th>
+                <th className="pb-2.5 text-right">VaR ({currencySymbol} Value)</th>
                 <th className="pb-2.5 text-right">ES / CVaR (%)</th>
-                <th className="pb-2.5 text-right">ES ($ Value)</th>
+                <th className="pb-2.5 text-right">ES ({currencySymbol} Value)</th>
                 <th className="pb-2.5 text-right">ES / VaR Tail Ratio</th>
               </tr>
             </thead>
@@ -91,13 +92,13 @@ export const VarModelsTab: React.FC<VarModelsTabProps> = ({ data }) => {
                       {m.var_pct.toFixed(2)}%
                     </td>
                     <td className="py-3 text-right text-white font-bold tabular-nums">
-                      ${m.var_amount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      {currencySymbol}{m.var_amount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </td>
                     <td className="py-3 text-right text-rose-400 font-bold tabular-nums">
                       {m.es_pct.toFixed(2)}%
                     </td>
                     <td className="py-3 text-right text-rose-300 font-bold tabular-nums">
-                      ${m.es_amount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      {currencySymbol}{m.es_amount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </td>
                     <td className="py-3 text-right text-yellow-400 font-mono font-semibold tabular-nums">
                       {ratio}x
