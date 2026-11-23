@@ -1,0 +1,39 @@
+# Python & Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+backend/venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# Backend Cache & Environment
+backend/cache/
+*.parquet
+.env
+backend/.env
+
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Editor & OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini
