@@ -15,16 +15,20 @@ async function fetchWithFallback(endpoint: string, options: RequestInit = {}): P
     }
     return res;
   } catch {
-    // If proxy completely failed to connect, try direct backend call
-    try {
-      const directRes = await fetch(`${DIRECT_BACKEND}${endpoint}`, options);
-      return directRes;
-    } catch {
-      throw new Error(
-        'Backend Risk Engine is unreachable on http://localhost:8000. ' +
-        'Please start the backend server by running: cd backend && python run.py'
-      );
+    // If proxy completely failed to connect, try direct backend call on local dev
+    const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    if (isLocal) {
+      try {
+        const directRes = await fetch(`${DIRECT_BACKEND}${endpoint}`, options);
+        return directRes;
+      } catch {
+        throw new Error(
+          'Backend Risk Engine is unreachable on http://localhost:8000. ' +
+          'Please start the backend server by running: cd backend && python run.py'
+        );
+      }
     }
+    throw new Error('Risk Engine backend service is currently unreachable. Please verify deployment status or retry.');
   }
 }
 

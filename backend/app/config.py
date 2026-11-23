@@ -4,8 +4,17 @@ from pathlib import Path
 from pydantic import BaseModel
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-CACHE_DIR = BASE_DIR / "cache"
-CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    CACHE_DIR = Path("/tmp/cache")
+else:
+    CACHE_DIR = BASE_DIR / "cache"
+
+try:
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+except Exception:
+    CACHE_DIR = Path("/tmp/cache")
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 class Settings(BaseModel):
     APP_NAME: str = "Bloomberg MARS - Risk Analytics Engine"
